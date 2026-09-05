@@ -1,4 +1,11 @@
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+  type HTMLMotionProps,
+  type Variants,
+} from "motion/react";
 import {
   useRef,
   useState,
@@ -11,7 +18,7 @@ import { cn } from "@/lib/utils";
 
 type RevealVariant = "up" | "mask" | "clip" | "scale" | "left" | "right";
 
-const variants: Record<RevealVariant, { hidden: object; show: object }> = {
+const variants: Record<RevealVariant, Variants> = {
   up: {
     hidden: { opacity: 0, y: 34 },
     show: { opacity: 1, y: 0 },
