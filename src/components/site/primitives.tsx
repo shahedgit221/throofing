@@ -1,5 +1,6 @@
 import {
   motion,
+  useInView,
   useReducedMotion,
   useScroll,
   useTransform,
@@ -92,9 +93,12 @@ export function SplitHeading({
 }) {
   const reduce = useReducedMotion();
   const words = text.split(" ");
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once, margin: "-8% 0px -8% 0px" });
+  const show = reduce || inView;
 
   return (
-    <span className={cn("inline-block", className)}>
+    <span ref={ref} className={cn("inline-block", className)}>
       {words.map((word, i) => (
         <span
           key={`${word}-${i}`}
@@ -103,8 +107,7 @@ export function SplitHeading({
           <motion.span
             className="inline-block"
             initial={reduce ? false : { y: "110%", opacity: 0 }}
-            whileInView={{ y: "0%", opacity: 1 }}
-            viewport={{ once, margin: "-10% 0px" }}
+            animate={show ? { y: "0%", opacity: 1 } : { y: "110%", opacity: 0 }}
             transition={{
               duration: 1,
               delay: delay + i * 0.06,
@@ -119,6 +122,7 @@ export function SplitHeading({
     </span>
   );
 }
+
 
 /* --------------------------------- Parallax -------------------------------- */
 
