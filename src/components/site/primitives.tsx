@@ -1,8 +1,16 @@
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import {
+  motion,
+  useInView,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+  type HTMLMotionProps,
+  type Variants,
+} from "motion/react";
 import {
   useRef,
   useState,
-  type ComponentPropsWithoutRef,
+  
   type ReactNode,
 } from "react";
 import { cn } from "@/lib/utils";
@@ -11,7 +19,7 @@ import { cn } from "@/lib/utils";
 
 type RevealVariant = "up" | "mask" | "clip" | "scale" | "left" | "right";
 
-const variants: Record<RevealVariant, { hidden: object; show: object }> = {
+const variants: Record<RevealVariant, Variants> = {
   up: {
     hidden: { opacity: 0, y: 34 },
     show: { opacity: 1, y: 0 },
@@ -85,9 +93,12 @@ export function SplitHeading({
 }) {
   const reduce = useReducedMotion();
   const words = text.split(" ");
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once, margin: "-8% 0px -8% 0px" });
+  const show = reduce || inView;
 
   return (
-    <span className={cn("inline-block", className)}>
+    <span ref={ref} className={cn("inline-block", className)}>
       {words.map((word, i) => (
         <span
           key={`${word}-${i}`}
@@ -96,8 +107,7 @@ export function SplitHeading({
           <motion.span
             className="inline-block"
             initial={reduce ? false : { y: "110%", opacity: 0 }}
-            whileInView={{ y: "0%", opacity: 1 }}
-            viewport={{ once, margin: "-10% 0px" }}
+            animate={show ? { y: "0%", opacity: 1 } : { y: "110%", opacity: 0 }}
             transition={{
               duration: 1,
               delay: delay + i * 0.06,
@@ -112,6 +122,7 @@ export function SplitHeading({
     </span>
   );
 }
+
 
 /* --------------------------------- Parallax -------------------------------- */
 
@@ -147,7 +158,7 @@ export function Parallax({
 
 /* ------------------------------ Magnetic button ---------------------------- */
 
-type MagneticProps = ComponentPropsWithoutRef<"a"> & {
+type MagneticProps = HTMLMotionProps<"a"> & {
   tone?: "solid" | "ghost";
 };
 
@@ -162,7 +173,7 @@ export function MagneticLink({
 
   return (
     <motion.a
-      {...(props as ComponentPropsWithoutRef<typeof motion.a>)}
+      {...props}
       onMouseMove={(e) => {
         if (reduce) return;
         const r = e.currentTarget.getBoundingClientRect();
