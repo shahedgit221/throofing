@@ -154,7 +154,7 @@ export function Parallax({
 
 /* ------------------------------ Magnetic button ---------------------------- */
 
-type MagneticProps = ComponentPropsWithoutRef<"a"> & {
+type MagneticProps = HTMLMotionProps<"a"> & {
   tone?: "solid" | "ghost";
 };
 
@@ -169,7 +169,7 @@ export function MagneticLink({
 
   return (
     <motion.a
-      {...(props as ComponentPropsWithoutRef<typeof motion.a>)}
+      {...props}
       onMouseMove={(e) => {
         if (reduce) return;
         const r = e.currentTarget.getBoundingClientRect();
